@@ -16,6 +16,12 @@ use SilverStripe\ORM\DataObject;
  */
 class BaseElementTextSearchExtension extends Extension
 {
+    private static $db_text_field_types = [
+        'Varchar',
+        'Text',
+        'HTMLText'
+    ];
+
     /**
      * This method looks for any text field on the element
      * plus any specified fields via config
@@ -24,18 +30,16 @@ class BaseElementTextSearchExtension extends Extension
      *
      * @return string
      */
-    public function getTextContentForSearch()
+    public function getTextContentForSearch(): string
     {
-        $dbTextField = [
-            'Varchar', 'Text', 'HTMLText'
-        ];
+        $dbTextFields = $this->owner->config()->get('db_text_field_types');
 
         // Find all text field
         $class = $this->owner->ClassName;
         $fields = DataObject::getSchema()->databaseFields($class);
-        $fields = array_filter($fields, function ($type, $name) use ($dbTextField) {
+        $fields = array_filter($fields, function ($type, $name) use ($dbTextFields) {
             $isText = false;
-            foreach ($dbTextField as $fieldType) {
+            foreach ($dbTextFields as $fieldType) {
                 if (strpos($type, $fieldType) !== false) {
                     $isText = true;
                 }
@@ -68,7 +72,7 @@ class BaseElementTextSearchExtension extends Extension
 
         // Allow to update fields list on class
         if ($this->owner->hasMethod('updateTextFieldsForSearch')) {
-            $this->owner->updateTextFieldsForSearch($fields);
+            $fields = $this->owner->updateTextFieldsForSearch($fields);
         }
 
         // Generate output
@@ -84,7 +88,14 @@ class BaseElementTextSearchExtension extends Extension
             $output[] = $this->sanitizeStringForSearch($this->owner->addTextContentForSearch());
         }
 
-        return implode(' ', $output);
+        $output =  implode(' ', $output);
+
+        // Allow to manipulate the resulting string
+        if ($this->owner->hasMethod('updateTextContentForSearch')) {
+            $output = $this->owner->updateTextContentForSearch($output);
+        }
+
+        return $output;
     }
 
     /**
@@ -93,10 +104,13 @@ class BaseElementTextSearchExtension extends Extension
      * @param string|html
      * @return string
      */
-    public function sanitizeStringForSearch($string)
+    public function sanitizeStringForSearch($original) : string
     {
-        $string = strip_tags($string);
+        $string = strip_tags($original);
         $string = str_replace(["\r\n", "\r", "\n"], ' ', $string);
+
+        $this->owner->extend('updateSanitizedStringForSearch', $string, $original);
+
         return $string;
     }
 }

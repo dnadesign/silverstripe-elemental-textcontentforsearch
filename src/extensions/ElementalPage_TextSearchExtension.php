@@ -6,13 +6,11 @@ use DNADesign\Elemental\Models\ElementalArea;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TextareaField;
 
 class ElementalPageTextSearchExtension extends Extension
 {
-    public function updateCMSFields(FieldList $fields)
-    {
-        $fields->addFieldToTab('Root.Search', LiteralField::create('SearchContent', $this->getTextContentForSearch()));
-    }
+    private static $show_text_content_search_in_cms = true;
 
     /**
      * This is an alternative to DNADesign\Elemental\Extensions\ElementalPageExtension::getElementsForSearch()
@@ -37,5 +35,17 @@ class ElementalPageTextSearchExtension extends Extension
         }
 
         return implode(' ', $output);
+    }
+
+    /**
+     * Display the search text in the settings for debugging
+     */
+    public function updateCMSFields(FieldList $fields)
+    {
+        if ($this->owner->config()->get('show_text_content_search_in_cms') === true) {
+            $searchTerms = TextareaField::create('TextContentForSearch', 'Text Content For Search', $this->getTextContentForSearch());
+            $searchTerms->setReadonly(true);
+            $fields->addFieldToTab('Root.Search', $searchTerms);
+        }
     }
 }
