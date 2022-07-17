@@ -129,13 +129,13 @@ you can use the config as follow:
 
 ```yaml
 DNADesign\Elemental\Models\ElementContent:
-  exclude_from_solr_index: true
+  exclude_content_from_search: true
 ```
 or
 ```php
 class MyCustomElement extends BaseElement
 {
-    private static $exclude_from_solr_index = true;
+    private static $exclude_content_from_search = true;
 }
 ```
 

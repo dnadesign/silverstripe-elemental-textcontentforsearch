@@ -85,7 +85,7 @@ class ElementalAreaTextSearchExtension extends Extension
         // and remove disallowed elements
         if ($elements  && $elements->exists()) {
             $elements = $elements->filterByCallback(function ($element) {
-                return !($element instanceof ElementVirtual && $element->config()->get('exclude_from_solr_index') !== true);
+                return !($element instanceof ElementVirtual && $element->config()->get('exclude_content_from_search') !== true);
             });
         }
         
