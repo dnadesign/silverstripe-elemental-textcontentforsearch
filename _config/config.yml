@@ -3,11 +3,11 @@ Name: elemental-textcontentforsearch
 ---
 DNADesign\Elemental\Models\BaseElement:
   extensions:
-    - DNADesign\Elemental\Extensions\BaseElementTextSearchExtension
+    textSearchExtension: DNADesign\Elemental\Extensions\BaseElementTextSearchExtension
   exclude_fields_from_search:
     - ExtraClass
     - Style
 
 DNADesign\Elemental\Models\ElementalArea:
   extensions:
-    - DNADesign\Elemental\Extensions\ElementalAreaTextSearchExtension
+    textSearchExtension: DNADesign\Elemental\Extensions\ElementalAreaTextSearchExtension

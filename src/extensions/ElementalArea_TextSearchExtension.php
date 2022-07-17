@@ -29,38 +29,41 @@ class ElementalAreaTextSearchExtension extends Extension
     public function getNestedElementalAreas()
     {
         $areas = [$this->owner->ID];
-        $lists =  $this->owner->Elements()->filterByCallback(function ($item) {
-            return $item->hasMethod('Elements');
-        });
 
-        if ($lists->count() > 0) {
-            $areas = array_merge($areas, $lists->column('ElementsID'));
-
-            // Recursively looks into nested ElementalAreas
-            foreach ($lists as $list) {
-                $nestedAreas = $list->Elements()->getNestedElementalAreas();
-                if (count($nestedAreas) > 0) {
-                    $areas = array_merge($areas, $nestedAreas);
-                }
-            }
-        }
-
-        // VirtualElement
-        if (class_exists(ElementVirtual::class)) {
-            $virtuals = $this->owner->Elements()->filterByCallback(function ($item) {
-                return $item instanceof ElementVirtual;
+        if ($this->owner->Elements()->exists()) {
+            $lists =  $this->owner->Elements()->filterByCallback(function ($item) {
+                return $item->hasMethod('Elements');
             });
     
-            if ($virtuals && $virtuals->exists()) {
-                foreach ($virtuals as $virtual) {
-                    $element = $virtual->LinkedElement();
-                    if ($element && $element->exists() && $element->hasMethod('Elements')) {
-                        array_push($areas, $element->ElementsID);
+            if ($lists->count() > 0) {
+                $areas = array_merge($areas, $lists->column('ElementsID'));
     
-                        // Recursively looks into nested ElementalAreas
-                        $virtualNestedAreas = $element->Elements()->getNestedElementalAreas();
-                        if (count($virtualNestedAreas) > 0) {
-                            $areas = array_merge($areas, $virtualNestedAreas);
+                // Recursively looks into nested ElementalAreas
+                foreach ($lists as $list) {
+                    $nestedAreas = $list->Elements()->getNestedElementalAreas();
+                    if (count($nestedAreas) > 0) {
+                        $areas = array_merge($areas, $nestedAreas);
+                    }
+                }
+            }
+    
+            // VirtualElement
+            if (class_exists(ElementVirtual::class)) {
+                $virtuals = $this->owner->Elements()->filterByCallback(function ($item) {
+                    return $item instanceof ElementVirtual;
+                });
+        
+                if ($virtuals && $virtuals->exists()) {
+                    foreach ($virtuals as $virtual) {
+                        $element = $virtual->LinkedElement();
+                        if ($element && $element->exists() && $element->hasMethod('Elements')) {
+                            array_push($areas, $element->ElementsID);
+        
+                            // Recursively looks into nested ElementalAreas
+                            $virtualNestedAreas = $element->Elements()->getNestedElementalAreas();
+                            if (count($virtualNestedAreas) > 0) {
+                                $areas = array_merge($areas, $virtualNestedAreas);
+                            }
                         }
                     }
                 }
@@ -77,16 +80,20 @@ class ElementalAreaTextSearchExtension extends Extension
      */
     public function getTextContentForSearch()
     {
-        $allowed_elements = BaseElement::config()->get('include_in_solr_index');
         $elements = $this->getAllElements();
         // Remove the virtual elements as their linked elements would already have been included
-        $elements = $elements->filterByCallback(function ($element) {
-            return !($element instanceof ElementVirtual);
-        });
-
+        // and remove disallowed elements
+        if ($elements  && $elements->exists()) {
+            $elements = $elements->filterByCallback(function ($element) {
+                return !($element instanceof ElementVirtual && $element->config()->get('exclude_from_solr_index') !== true);
+            });
+        }
+        
         $output = [];
-        foreach ($elements as $element) {
-            $output[] = $element->getTextContentForSearch();
+        if ($elements && $elements->exists()) {
+            foreach ($elements as $element) {
+                $output[] = $element->getTextContentForSearch();
+            }
         }
 
         return implode(' ', $output);
