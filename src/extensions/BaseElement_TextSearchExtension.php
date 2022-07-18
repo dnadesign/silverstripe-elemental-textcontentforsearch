@@ -3,7 +3,6 @@
 namespace DNADesign\Elemental\Extensions;
 
 use SilverStripe\Core\Extension;
-use SilverStripe\ORM\Connect\DBSchemaManager;
 use SilverStripe\ORM\DataObject;
 
 /**
