@@ -100,7 +100,7 @@ class MyCustomElement extends BaseElement
         'AccordionItems' => AccordionItem::class
     ];
 
-    public function addTextContentForSearch($string)
+    public function addTextContentForSearch()
     {
         $titles = [];
         foreach($this->AccordionItems() as $item) {
