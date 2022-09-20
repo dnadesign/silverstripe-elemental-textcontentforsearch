@@ -105,7 +105,7 @@ class BaseElementTextSearchExtension extends Extension
      */
     public function sanitizeStringForSearch($original) : string
     {
-        $string = strip_tags($original);
+        $string = $original ? strip_tags($original) : '';
         $string = str_replace(["\r\n", "\r", "\n"], ' ', $string);
 
         $this->owner->extend('updateSanitizedStringForSearch', $string, $original);
