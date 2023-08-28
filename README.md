@@ -3,8 +3,8 @@ A set of helper methods to facilitate searching elemental pages
 
 ## Requirements
 
-* Silverstripe CMS ^4.3
-* Silverstripe Elemental ^4
+* Silverstripe CMS ^5
+* Silverstripe Elemental ^5
 
 ## Installation
 
