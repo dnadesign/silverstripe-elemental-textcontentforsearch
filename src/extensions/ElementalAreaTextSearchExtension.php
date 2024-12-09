@@ -3,16 +3,21 @@
 namespace DNADesign\Elemental\Extensions;
 
 use DNADesign\Elemental\Models\BaseElement;
+use DNADesign\Elemental\Models\ElementalArea;
 use DNADesign\ElementalVirtual\Model\ElementVirtual;
 use SilverStripe\Core\Extension;
+use SilverStripe\ORM\DataList;
 
+/**
+ * @extends Extension<(ElementalArea & static)>
+ */
 class ElementalAreaTextSearchExtension extends Extension
 {
     /**
     * Return all the elements for an element area
     * including the ones nested in ElementList
     *
-    * @return DataList
+    * @return DataList<BaseElement>
     */
     public function getAllElements()
     {
@@ -24,7 +29,7 @@ class ElementalAreaTextSearchExtension extends Extension
      * as well as virtual elements
      * to extract the complete list of element presents within a single area
      *
-     * @return DataList
+     * @return array<int|string>
      */
     public function getNestedElementalAreas()
     {
