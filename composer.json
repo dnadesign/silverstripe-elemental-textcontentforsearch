@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DNADesign\\ElementalTextContentForSearch\\": "src/"
+            "DNADesign\\Elemental\\Extensions\\": "src/extensions"
         }
     },
     "extra": {
