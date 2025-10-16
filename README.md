@@ -3,18 +3,13 @@ A set of helper methods to facilitate searching elemental pages
 
 ## Requirements
 
-* Silverstripe CMS ^5
-* Silverstripe Elemental ^5
+* Silverstripe CMS ^6
+* Silverstripe Elemental ^6
 
 ## Installation
 
 ```
-composer require dnadesign/silverstripe-elemental-textcontentforsearch ^1.1
-```
-
-For Silverstripe 4, use version 1.0.0
-```
-composer require dnadesign/silverstripe-elemental-textcontentforsearch 1.0.0
+composer require dnadesign/silverstripe-elemental-textcontentforsearch
 ```
 
 The following YAML config will enable elements on every `Page` object,
