@@ -16,8 +16,8 @@
         "email": "dev@dna.co.nz"
     }],
     "require": {
-        "silverstripe/framework": "^5",
-        "dnadesign/silverstripe-elemental": "^5"
+        "silverstripe/framework": "^6",
+        "dnadesign/silverstripe-elemental": "^6"
     },
     "autoload": {
         "psr-4": {
